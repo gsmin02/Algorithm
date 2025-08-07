@@ -1,43 +1,48 @@
+import sys
 from collections import deque
-import copy
+input = sys.stdin.readline
 
 N, M = map(int, input().split())
 graph = [list(map(int, input().split())) for _ in range(N)]
 
-dx = [-1, 1, 0, 0]
-dy = [0, 0, -1, 1]
-
-def virus(x, y, temp):
-    queue = deque([(x, y)])
-    while queue:
-        x, y = queue.popleft()
+dx, dy = [1, 0, -1, 0], [0, 1, 0, -1]
+def bfs(x, y, visited):
+    q = deque()
+    q.append((x,y))
+    while q:
+        x, y = q.popleft()
         for i in range(4):
             nx, ny = x + dx[i], y + dy[i]
-            if 0 <= nx < N and 0 <= ny < M and temp[nx][ny] == 0:
-                temp[nx][ny] = 2
-                queue.append((nx, ny))
+            if nx < 0 or nx >= N or ny < 0 or ny >= M: continue
+            if visited[nx][ny] == 0:
+                visited[nx][ny] = 1
+                q.append((nx, ny))
 
-def get_safe_area(temp):
-    return sum(row.count(0) for row in temp)
+walls = []
+virus = []
+for x in range(N):
+    for y in range(M):
+        if graph[x][y] == 0: walls.append([x, y])
+        elif graph[x][y] == 2: virus.append([x, y])
 
-def wall(count):
-    global max_safe
-    if count == 3:
-        temp = copy.deepcopy(graph)
-        for i in range(N):
-            for j in range(M):
-                if temp[i][j] == 2:
-                    virus(i, j, temp)
-        max_safe = max(max_safe, get_safe_area(temp))
-        return
-    
-    for i in range(N):
-        for j in range(M):
-            if graph[i][j] == 0:
-                graph[i][j] = 1
-                wall(count + 1)
-                graph[i][j] = 0
-
-max_safe = 0
-wall(0)
-print(max_safe)
+result = 0
+l = len(walls)
+for i in range(l):
+    for j in range(i + 1, l):
+        for k in range(j + 1, l):
+            cnt = 0
+            visited = [[0 if graph[x][y] == 0 else 1 for y in range(M)] for x in range(N)]
+            
+            visited[walls[i][0]][walls[i][1]] = 9
+            visited[walls[j][0]][walls[j][1]] = 9
+            visited[walls[k][0]][walls[k][1]] = 9
+            
+            for v in virus:
+                bfs(v[0], v[1], visited=visited)
+                
+            for x in range(N):
+                for y in range(M):
+                    if visited[x][y] == 0:
+                        cnt += 1
+            result = max(result, cnt)
+print(result)
