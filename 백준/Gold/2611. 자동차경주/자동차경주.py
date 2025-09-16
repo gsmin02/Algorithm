@@ -46,4 +46,4 @@ while curr_node != 1:
 result.append(1)
 result.reverse()
 result.append(1)
-print(*result)
+print(" ".join(map(str, result)))
