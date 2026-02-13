@@ -1,2 +1,13 @@
+"""
+[문제]
+포켓몬 N마리가 있을 때 N/2마리까지 선택 가능
+단, 동일한 종류인 경우 해당 종류 중 하나만 선택 가능함
+
+[해석]
+N/2와 종류의 수 중 더 작은 것을 찾아야 함
+
+[풀이]
+N/2와 고유값의 최소를 계산
+"""
 def solution(nums):
-    return min(len(nums)/2,len(set(nums)))
+    return min(len(nums)//2, len(set(nums)))
