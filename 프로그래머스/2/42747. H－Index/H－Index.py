@@ -16,8 +16,10 @@ def solution(citations):
     h = len(citations)
     papers = sorted(citations)
     for i in papers:
+        # Solving 1: 가장 작은 인용 수보다 h가 크면 h 감소
         if i < h:
             h -= 1
+        # Solving 2: h가 작으면 해당 값이 h-index
         else:
             break
     answer = h
